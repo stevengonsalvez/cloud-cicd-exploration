@@ -1,0 +1,14 @@
+on: 
+  pull_request:
+    paths:
+    - 'people.csv'
+name: CI
+jobs:
+  csvdiff:
+    name: csvdiff
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+      - run : git diff origin/master HEAD
