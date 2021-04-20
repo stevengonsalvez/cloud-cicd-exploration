@@ -14,4 +14,4 @@ jobs:
       - run: |
           git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
       - run : |
-          echo "::set-output name=csvdiff::$(git diff origin/master HEAD)"
+          echo "::set-output name=csvdiff::$(git diff origin/master:people.csv HEAD:people.csv)"
