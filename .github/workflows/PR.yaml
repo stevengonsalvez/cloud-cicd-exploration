@@ -15,7 +15,6 @@ jobs:
           git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
       - run : |
           echo "::set-output diff=csvdiff::$(git diff origin/test:people.csv HEAD:people.csv)"
-
   check_users:
      name: check_users
      runs-on: ubuntu-latest
