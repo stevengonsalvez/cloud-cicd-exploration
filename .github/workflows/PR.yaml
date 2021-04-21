@@ -14,11 +14,9 @@ jobs:
       - run: |
           git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
       - run : |
-          echo "::set-output diff=csvdiff::$(git diff origin/test:people.csv HEAD:people.csv)"
-  check_users:
-     name: check_users
-     runs-on: ubuntu-latest
-     steps:
-       - name: stuff
-       - run: |
-            echo ${{needs.csvdiff.outputs.diff}}
+          echo "::set-output diff=csvdiff::$(git diff origin/test:people.csv HEAD:people.csv --unified=0 | egrep "^\+" | grep -v "people.csv" | tr -d "+")"
+      - run : |
+          git diff origin/test:people.csv HEAD:people.csv --unified=0 | egrep "^\+" | grep -v "people.csv" | tr -d "+" > /tmp/output.csv
+          IFS=$'\n'
+      - run: bash -x ./check.sh /tmp/output.csv ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
