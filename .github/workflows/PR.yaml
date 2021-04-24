@@ -3,7 +3,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.PAT }}
   TERRAFORM_BASE_PATH: ./terraform/user
 on:
-  pull_request:
+  pull_request_target:
     branches: master
     paths:
       - "people.csv"
