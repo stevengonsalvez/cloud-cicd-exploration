@@ -53,3 +53,27 @@ jobs:
         with:
           path: ${{ env.TERRAFORM_BASE_PATH }}
           label: users
+  apply:
+    needs: ["plan"]
+    runs-on: ubuntu-latest
+    name: Apply User membership
+    env:
+      GITHUB_TOKEN: ${{ secrets.PAT }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: terraform apply
+        uses: dflook/terraform-apply@v1
+        with:
+          path: ${{ env.TERRAFORM_BASE_PATH }}
+          label: user-membership
+          auto_approve: true
+      - name: Set git remote URL
+        run: git remote set-url origin https://$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Persist state. run num ${{ github.run_id }}
+          push_options: --force
+          commit_user_name: stevengonsalvez
+          commit_user_email: steven.gonsalvez@marks-and-spencer.com
+          commit_author: Steven Gonsalvez <stevengonsalvez@marks-and-spencer.com>
