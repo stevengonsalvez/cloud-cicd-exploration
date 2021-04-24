@@ -1,7 +1,6 @@
 locals {
   organization = "action-foobar"
-  userlist     = concat(csvdecode(file("${path.module}/../../bots.csv")),csvdecode(file("${path.module}/../../people.csv")))
-  #userlist     = csvdecode(file("${path.module}/../../bots.csv"))
+  userlist     = concat(csvdecode(file("${path.module}/../../bots.csv")), csvdecode(file("${path.module}/../../people.csv")))
 
 }
 
@@ -19,11 +18,9 @@ resource "github_membership" "this" {
 
   username = each.value.Username
   role     = "member"
-
-  # member or admin
 }
 
-output "input_user"{
+output "input_user" {
   value = local.userlist
 }
 output "user_details" {
