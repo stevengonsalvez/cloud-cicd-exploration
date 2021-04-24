@@ -1,6 +1,6 @@
 name: PR - check user, lint , add user
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.PAT }}
   TERRAFORM_BASE_PATH: ./terraform/user
 on:
   pull_request:
@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Plan users
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.PAT }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
