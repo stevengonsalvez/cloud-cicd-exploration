@@ -1,6 +1,6 @@
 locals {
-    organization = "action-foobar"
-    userlist=csvdecode(file("${path.module}/../../people.csv"))
+  organization = "action-foobar"
+  userlist     = csvdecode(file("${path.module}/../../people.csv"))
 }
 
 provider "github" {
@@ -14,7 +14,7 @@ data "github_user" "example" {
 
 resource "github_membership" "this" {
   for_each = { for usr in local.userlist : usr.Username => usr }
-  
+
   username = each.value.Username
   role     = "member"
 
@@ -22,13 +22,13 @@ resource "github_membership" "this" {
 }
 
 data "github_membership" "list" {
-    for_each = { for usr in local.userlist : usr.Username => usr }
-    username = each.value.Username
-    organization = local.organization
+  for_each     = { for usr in local.userlist : usr.Username => usr }
+  username     = each.value.Username
+  organization = local.organization
 }
 
 output "org_membership" {
-    value = data.github_membership.list 
+  value = data.github_membership.list
 }
 
 output "user_details" {
