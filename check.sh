@@ -29,12 +29,14 @@ function rest_call {
 check_user_details() {
     get_user_details
 
+    set -x
     if [[ $(cat $TMPFILE | jq .company | grep null ) || $(cat $TMPFILE | jq .name | grep null) ]] ; then
         echo "user does not have company or name specified on profile"
         exit 1
     else
         echo "valid user"
     fi
+    set +x
 
 }
 
