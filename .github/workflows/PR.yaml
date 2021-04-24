@@ -4,9 +4,9 @@ env:
   TERRAFORM_BASE_PATH: ./terraform/user
 on:
   pull_request:
+    branches: master
     paths:
       - "people.csv"
-  push:
 jobs:
   check_user:
     name: check_user
