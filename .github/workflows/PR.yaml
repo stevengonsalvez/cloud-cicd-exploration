@@ -77,3 +77,14 @@ jobs:
           commit_user_name: stevengonsalvez
           commit_user_email: steven.gonsalvez@marks-and-spencer.com
           commit_author: Steven Gonsalvez <stevengonsalvez@marks-and-spencer.com>
+  automerge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: reitermarkus/automerge@v2
+        with:
+          token: ${{ secrets.PAT }}
+          merge-method: rebase
+          do-not-merge-labels: never-merge
+          required-labels: automerge
+          pull-request: ${{ github.event.inputs.pull-request }}
+          dry-run: true
