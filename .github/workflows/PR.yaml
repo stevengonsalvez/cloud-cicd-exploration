@@ -87,3 +87,4 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.PAT }}"
           MERGE_METHOD: "merge"
           MERGE_LABELS: "automerge"
+          UPDATE_LABELS: "automerge"
