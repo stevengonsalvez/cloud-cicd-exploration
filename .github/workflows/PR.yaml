@@ -85,5 +85,5 @@ jobs:
         uses: "pascalgn/automerge-action@v0.13.1"
         env:
           GITHUB_TOKEN: "${{ secrets.PAT }}"
-          MERGE_METHOD: "rebase"
+          MERGE_METHOD: "merge"
           MERGE_LABELS: "automerge"
