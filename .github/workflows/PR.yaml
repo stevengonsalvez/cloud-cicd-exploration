@@ -1,14 +1,89 @@
-on: 
+name: PR - check user, lint , add user
+env:
+  GITHUB_TOKEN: ${{ secrets.PAT }}
+  TERRAFORM_BASE_PATH: ./terraform/user
+on:
   pull_request:
+    branches: master
     paths:
-    - 'people.csv'
-name: CI
+      - "people.csv"
 jobs:
-  csvdiff:
-    name: csvdiff
+  check_user:
+    name: check_user
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run: |
           git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
-      - run : git diff origin/master HEAD
+      # - run: |
+      #     echo "::set-output diff=csvdiff::$(git diff origin/test:people.csv HEAD:people.csv --unified=0 | egrep "^\+" | grep -v "people.csv" | tr -d "+")"
+      - run: |
+          git diff origin/test:people.csv HEAD:people.csv --unified=0 | { egrep -s  "^\+" || true; } | { grep -v "people.csv" || true; } | tr -d "+" &>/tmp/output.csv
+      - run: ./check.sh /tmp/output.csv ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+  lint:
+    needs: ["check_user"]
+    runs-on: ubuntu-latest
+    name: Validate terraform configuration
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: terraform fmt
+        uses: dflook/terraform-fmt-check@v1
+        with:
+          path: ${{ env.TERRAFORM_BASE_PATH }}
+      - name: Run Checkov action
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: ${{ env.TERRAFORM_BASE_PATH }}
+          soft_fail: true
+  plan:
+    needs: ["lint"]
+    runs-on: ubuntu-latest
+    name: Plan users
+    env:
+      GITHUB_TOKEN: ${{ secrets.PAT }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: terraform plan
+        uses: dflook/terraform-plan@v1
+        with:
+          path: ${{ env.TERRAFORM_BASE_PATH }}
+          label: users
+  apply:
+    needs: ["plan"]
+    runs-on: ubuntu-latest
+    name: Apply User membership
+    env:
+      GITHUB_TOKEN: ${{ secrets.PAT }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: terraform apply
+        uses: dflook/terraform-apply@v1
+        with:
+          path: ${{ env.TERRAFORM_BASE_PATH }}
+          label: user-membership
+          auto_approve: true
+      - name: Set git remote URL
+        run: git remote set-url origin https://$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Persist state. run num ${{ github.run_id }}
+          push_options: --force
+          commit_user_name: stevengonsalvez
+          commit_user_email: steven.gonsalvez@marks-and-spencer.com
+          commit_author: Steven Gonsalvez <stevengonsalvez@marks-and-spencer.com>
+  automerge:
+    needs: ["apply"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: automerge
+        uses: "pascalgn/automerge-action@v0.13.1"
+        env:
+          GITHUB_TOKEN: "${{ secrets.PAT }}"
+          MERGE_METHOD: "merge"
+          MERGE_LABELS: "automerge"
