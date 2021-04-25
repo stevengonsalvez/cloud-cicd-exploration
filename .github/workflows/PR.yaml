@@ -3,7 +3,16 @@ env:
   GITHUB_TOKEN: ${{ secrets.PAT }}
   TERRAFORM_BASE_PATH: ./terraform/user
 on:
-  pull_request_target:
+  pull_request:
+    types:
+      - labeled
+      - unlabeled
+      - synchronize
+      - opened
+      - edited
+      - ready_for_review
+      - reopened
+      - unlocked
     branches: master
     paths:
       - "people.csv"
@@ -81,11 +90,7 @@ jobs:
     needs: ["apply"]
     runs-on: ubuntu-latest
     steps:
-      - uses: reitermarkus/automerge@v1.5.2
-        with:
-          token: ${{ secrets.PAT }}
-          merge-method: rebase
-          do-not-merge-labels: never-merge
-          required-labels: automerge
-          pull-request: ${{ github.event.inputs.pull-request }}
-          dry-run: false
+      - name: automerge
+        uses: "pascalgn/automerge-action@v0.13.1"
+        env:
+          GITHUB_TOKEN: "${{ secrets.PAT }}"
