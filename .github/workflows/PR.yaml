@@ -88,3 +88,4 @@ jobs:
           MERGE_METHOD: "merge"
           MERGE_LABELS: "automerge"
           UPDATE_LABELS: "automerge"
+          MERGE_DELETE_BRANCH: "true"
