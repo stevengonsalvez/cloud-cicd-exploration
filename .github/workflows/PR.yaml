@@ -4,15 +4,6 @@ env:
   TERRAFORM_BASE_PATH: ./terraform/user
 on:
   pull_request:
-    types:
-      - labeled
-      - unlabeled
-      - synchronize
-      - opened
-      - edited
-      - ready_for_review
-      - reopened
-      - unlocked
     branches: master
     paths:
       - "people.csv"
@@ -94,3 +85,5 @@ jobs:
         uses: "pascalgn/automerge-action@v0.13.1"
         env:
           GITHUB_TOKEN: "${{ secrets.PAT }}"
+          MERGE_METHOD: "rebase"
+          MERGE_LABELS: "automerge"
