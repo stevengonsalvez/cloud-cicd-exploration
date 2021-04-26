@@ -6,7 +6,8 @@ on:
   pull_request:
     branches: master
     paths:
-      - "people.csv"
+      - "users.csv"
+      - "bots.csv"
 jobs:
   check_user:
     name: check_user
@@ -15,11 +16,15 @@ jobs:
       - uses: actions/checkout@v2
       - run: |
           git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
-      # - run: |
-      #     echo "::set-output diff=csvdiff::$(git diff origin/test:people.csv HEAD:people.csv --unified=0 | egrep "^\+" | grep -v "people.csv" | tr -d "+")"
       - run: |
-          git diff origin/test:people.csv HEAD:people.csv --unified=0 | { egrep -s  "^\+" || true; } | { grep -v "people.csv" || true; } | tr -d "+" &>/tmp/output.csv
-      - run: ./check.sh /tmp/output.csv ${{ secrets.GITHUB_TOKEN }}
+          git diff origin/master:users.csv HEAD:users.csv --unified=0 | { egrep -s  "^\+" || true; } | { grep -v "users.csv" || true; } | tr -d "+" &>/tmp/output.csv
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          allow-no-subscriptions: true
+      - run: ./check.sh -f /tmp/output.csv -t ${{ secrets.GITHUB_TOKEN }} -a check_user_ad
+        shell: bash
+      - run: ./check.sh -f /tmp/output.csv -t ${{ secrets.GITHUB_TOKEN }} -a check_user
         shell: bash
   lint:
     needs: ["check_user"]
