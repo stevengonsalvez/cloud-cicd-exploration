@@ -2,6 +2,9 @@ name: PR - check user, lint , add user
 env:
   GITHUB_TOKEN: ${{ secrets.PAT }}
   TERRAFORM_BASE_PATH: ./terraform/user
+  ARM_CLIENT_SECRET :  ${{ secrets.ARM_CLIENT_SECRET }}
+  ARM_CLIENT_ID :  ${{ secrets.ARM_CLIENT_ID }}
+  ARM_TENANT_ID :  ${{ secrets.ARM_TENANT_ID }}
 on:
   pull_request:
     branches: master

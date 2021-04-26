@@ -65,11 +65,18 @@ function list_user_in_org () {
 
 function check_user_ad () {
     
+    if [[ -z "$ARM_CLIENT_ID" ]] || [[ -z "$ARM_CLIENT_SECRET" ]] || [[ -z "$ARM_TENANT_ID" ]]; then
+        echo "$help"
+        die "Required env variables not entered!"
+    fi
+
+
     set -ex
     # not covering the az login (so expect that az login is executed before the script)
     for each in `cat $file | awk -F\[\,\@] '{ print $5 }'`; do
          id="$each@mnscorp.net";
          echo $id 
+         az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
          az ad user show --id $id --query '[employeeId,mail,accountEnabled]'
     done
     set +ex
@@ -94,10 +101,14 @@ done
 # Usage
 help="
   usage: $0 [ -f value -t value -a value ]
-     -a --> action: check_user, list_user_org, check_user_ad
+     -a --> action: check_user, list_user_org, check_user_ad 
      -f --> csv file input for users(relative path to script) 
      -t --> gthub token
-"
+     environmemt variables: if check_user_ad used , then environment variables to be set
+        ARM_CLIENT_ID
+        ARM_CLIENT_SECRET
+        ARM_TENANT_ID
+    "
 
 
 # Test input vars
