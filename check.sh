@@ -65,6 +65,7 @@ function list_user_in_org () {
 
 function check_user_ad () {
     
+
     if [[ -z "$ARM_CLIENT_ID" ]] || [[ -z "$ARM_CLIENT_SECRET" ]] || [[ -z "$ARM_TENANT_ID" ]]; then
         echo "$help"
         die "Required env variables not entered!"
@@ -76,7 +77,7 @@ function check_user_ad () {
     for each in `cat $file | awk -F\[\,\@] '{ print $5 }'`; do
          id="$each@mnscorp.net";
          echo $id 
-         az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+         az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID || true
          az ad user show --id $id --query '[employeeId,mail,accountEnabled]'
     done
     set +ex
