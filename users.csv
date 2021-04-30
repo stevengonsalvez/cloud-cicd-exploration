@@ -1,3 +1,3 @@
-Username,Name,Company,ID,Email
-crmitchelmore, Chris Mitchelmore,Fizz and Buzz,X0001100,c.m@fizzbuzz.com
-elizcol,Elizabeth Colgate,Fizz and Buzz,X0001100,Elizabeth.Colgate@fizzbuzz.com
+Username,Name,Company,ID,Email,Role
+crmitchelmore, Chris Mitchelmore,Fizz and Buzz,X0001100,c.m@fizzbuzz.com,member
+elizcol,Elizabeth Colgate,Fizz and Buzz,X0001100,Elizabeth.Colgate@fizzbuzz.com,member
