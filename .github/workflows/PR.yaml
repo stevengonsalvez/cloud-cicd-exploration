@@ -25,8 +25,8 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           allow-no-subscriptions: true
-      - run: ./check.sh -f /tmp/output.csv -t ${{ secrets.GITHUB_TOKEN }} -a check_user_ad
-        shell: bash
+      # - run: ./check.sh -f /tmp/output.csv -t ${{ secrets.GITHUB_TOKEN }} -a check_user_ad
+      #   shell: bash
       - run: ./check.sh -f /tmp/output.csv -t ${{ secrets.GITHUB_TOKEN }} -a check_user
         shell: bash
   lint:
