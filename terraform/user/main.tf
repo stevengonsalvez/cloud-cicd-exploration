@@ -1,5 +1,5 @@
 locals {
-  organization = "DigitalInnovation"
+  organization = "action-foobar"
   userlist     = concat(csvdecode(file("${path.module}/../../bots.csv")), csvdecode(file("${path.module}/../../users.csv")))
   # userlist     = csvdecode(file("${path.module}/../../bots.csv"))
 
