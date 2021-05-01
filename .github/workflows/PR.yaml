@@ -94,6 +94,6 @@ jobs:
         env:
           GITHUB_TOKEN: "${{ secrets.PAT }}"
           MERGE_METHOD: "merge"
-          MERGE_LABELS: "automerge"
+          MERGE_LABELS: ""
           UPDATE_LABELS: "automerge"
           MERGE_DELETE_BRANCH: "true"
