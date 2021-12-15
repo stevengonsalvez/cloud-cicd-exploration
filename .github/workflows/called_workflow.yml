@@ -14,7 +14,7 @@ jobs:
   run_on_push:
     name: push
     runs-on: ubuntu-latest
-    if: $TRIGGER_EVENT == 'push'
+    if: ${{ inputs.TRIGGER_EVENT == 'push' }}
     steps:
       - name: print
         run:  |
@@ -24,7 +24,7 @@ jobs:
   run_on_pullrequest:
     name: pr
     runs-on: ubuntu-latest
-    if: $TRIGGER_EVENT == 'pull_request'
+    if: ${{ inputs.TRIGGER_EVENT == 'pull_request' }}
     steps:
       - name: print
         run:  |
