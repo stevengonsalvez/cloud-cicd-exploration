@@ -10,8 +10,9 @@ on:
         required: true
         type: string
   
+jobs:
   run_on_push:
-    name: checking conditionals
+    name: push
     runs-on: ubuntu-latest
     if: ${{ inputs.TRIGGER_EVENT }} == 'push'
     steps:
@@ -21,7 +22,7 @@ on:
           echo "push workflow"
 
   run_on_pullrequest:
-    name: checking conditionals
+    name: pr
     runs-on: ubuntu-latest
     if: ${{ inputs.TRIGGER_EVENT }} == 'pull_request'
     steps:
