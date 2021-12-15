@@ -7,6 +7,6 @@ on:
 # 2
 jobs:
   call-the-workflow:
-    uses: action-foobar/action-testing/new/master/.github/workflows/caller-workflow.yml@master
+    uses: action-foobar/action-testing/.github/workflows/caller-workflow.yml@master
     with:
       TRIGGER_EVENT : ${{ github.event_name }}
