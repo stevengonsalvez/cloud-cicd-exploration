@@ -1,0 +1,31 @@
+name: called worfklow test
+
+env:
+  TRIGGER_EVENT: ${{ inputs.TRIGGER_EVENT }}
+
+on:
+  workflow_call:
+    inputs:
+      TRIGGER_EVENT:
+        required: true
+        type: string
+  
+  run_on_push:
+    name: checking conditionals
+    runs-on: ubuntu-latest
+    if: ${{ inputs.TRIGGER_EVENT }} == 'push'
+    steps:
+      - name: print
+        run:  |
+          echo ${{ inputs.TRIGGER_EVENT }}
+          echo "push workflow"
+
+  run_on_pullrequest:
+    name: checking conditionals
+    runs-on: ubuntu-latest
+    if: ${{ inputs.TRIGGER_EVENT }} == 'pull_request'
+    steps:
+      - name: print
+        run:  |
+          echo ${{ inputs.TRIGGER_EVENT }} 
+          echo "pull request workflow"
