@@ -34,18 +34,15 @@ jobs:
         run:  |
           echo ${{ inputs.TRIGGER_EVENT }} 
           echo "pull request workflow"
+          echo ${{ inputs.ENV_SECRET_ARRAY }}
 
 
-  multi_secret:
-    name: multi-secret
+  job2:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ${{ fromJson(inputs.ENV_SECRET_ARRAY) }}
     steps:
-      - name: print
-        run:  |
-          echo ${{ inputs.ENV_SECRET_ARRAY }} | jq .
-          for each in `echo ${{ inputs.ENV_SECRET_ARRAY }} | jq -r '.[]'`; 
-          do
-            echo "::set-env name=$(each)::$(each)"
-            SECRET_VALUE=${{ secrets[$(each)] }};
-          done
-
+      - run: |
+          echo "🎉 The job was automatically triggered by an event."
+          echo ${{ matrix.node }}
