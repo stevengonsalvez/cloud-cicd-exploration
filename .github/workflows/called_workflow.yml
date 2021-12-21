@@ -9,6 +9,11 @@ on:
       TRIGGER_EVENT:
         required: true
         type: string
+      ENV_SECRET_ARRAY:
+        description: test
+        required: false
+        type: string
+        default: '["${{ secrets.FOO }}", "${{ secrets.WEE }}"]'
   
 jobs:
   run_on_push:
@@ -30,3 +35,12 @@ jobs:
         run:  |
           echo ${{ inputs.TRIGGER_EVENT }} 
           echo "pull request workflow"
+
+
+  multi_secret:
+    name: multi-secret
+    runs-on: ubuntu-latest
+    steps:
+      - name: print
+        run:  |
+          echo ${{ inputs.ENV_SECRET_ARRAY }}
