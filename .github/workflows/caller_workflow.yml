@@ -10,4 +10,4 @@ jobs:
     uses: action-foobar/action-testing/.github/workflows/called_workflow.yml@master
     with:
       TRIGGER_EVENT : ${{ github.event_name }}
-      ENV_SECRET_ARRAY: '"${{ secrets.FOO }}"'
+      ENV_SECRET_ARRAY: ${{ format('{0}/{1}.{2}', secrets.FOO, secrets.WEE) }}
