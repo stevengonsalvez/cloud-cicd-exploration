@@ -42,4 +42,4 @@ jobs:
     steps:
       - name: print
         run:  |
-          echo ${{ fromJSON(inputs.runs-on) }}
+          echo ${{ inputs.runs-on }} | jq .
