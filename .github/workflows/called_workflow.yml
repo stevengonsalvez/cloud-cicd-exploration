@@ -15,20 +15,21 @@ on:
         type: string
         
 jobs:
-  run_on_push:
-    name: push
-    runs-on: ubuntu-latest
-    if: ${{ inputs.TRIGGER_EVENT == 'push' }}
-    steps:
-      - name: print
-        run:  |
-          echo ${{ inputs.TRIGGER_EVENT }}
-          echo "push workflow"
+#   run_on_push:
+#     name: push
+#     runs-on: ubuntu-latest
+#     if: ${{ inputs.TRIGGER_EVENT == 'push' }}
+#     steps:
+#       - name: print
+#         run:  |
+#           echo ${{ inputs.TRIGGER_EVENT }}
+#           echo "push workflow"
+#           echo ${{ inputs.ENV_SECRET_ARRAY }}
 
   run_on_pullrequest:
     name: pr
     runs-on: ubuntu-latest
-    if: ${{ inputs.TRIGGER_EVENT == 'pull_request' }}
+   # if: ${{ inputs.TRIGGER_EVENT == 'pull_request' }}
     steps:
       - name: print
         run:  |
