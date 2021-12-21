@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: ${{ fromJson(inputs.ENV_SECRET_ARRAY) }}
+        node: ${{ inputs.ENV_SECRET_ARRAY }}
     steps:
       - run: |
           echo "🎉 The job was automatically triggered by an event."
