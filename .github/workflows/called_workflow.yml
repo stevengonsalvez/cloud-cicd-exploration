@@ -42,4 +42,4 @@ jobs:
     steps:
       - name: print
         run:  |
-          echo ${{ inputs.runs-on }} | jq .
+          echo ${{ inputs.ENV_SECRET_ARRAY }} | jq .
