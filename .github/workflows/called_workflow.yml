@@ -42,4 +42,4 @@ jobs:
     steps:
       - name: print
         run:  |
-          echo ${{ inputs.ENV_SECRET_ARRAY }}
+          echo ${{ fromJSON(inputs.runs-on) }}
