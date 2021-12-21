@@ -45,6 +45,7 @@ jobs:
           echo ${{ inputs.ENV_SECRET_ARRAY }} | jq .
           for each in `echo ${{ inputs.ENV_SECRET_ARRAY }} | jq -r '.[]'`; 
           do
-            SECRET_VALUE=${{ secrets[$each] }};
+            echo "::set-env name=$(each)::$(each)"
+            SECRET_VALUE=${{ secrets[$(each)] }};
           done
 
