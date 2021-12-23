@@ -40,8 +40,7 @@ jobs:
 
 
   job2:
-    needs:
-      - run_on_pullrequest
+    needs: ["run_on_pullrequest"]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -50,4 +49,3 @@ jobs:
       - run: |
           echo "🎉 The job was automatically triggered by an event."
           echo ${{ matrix.node }}
-          echo ${{ }}
