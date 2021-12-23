@@ -36,14 +36,18 @@ jobs:
           echo ${{ inputs.TRIGGER_EVENT }} 
           echo "pull request workflow"
           echo ${{ fromJson(inputs.ENV_SECRET_ARRAY) }}
+          echo ::set-output name=list::${{ fromJson(inputs.ENV_SECRET_ARRAY) }}
 
 
   job2:
+    needs:
+      - run_on_pullrequest
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: ${{ fromJson(inputs.ENV_SECRET_ARRAY) }}
+        node: ${{ needs.run_on_pullrequest.outputs.list }}
     steps:
       - run: |
           echo "🎉 The job was automatically triggered by an event."
           echo ${{ matrix.node }}
+          echo ${{ }}
