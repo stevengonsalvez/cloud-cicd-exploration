@@ -1,0 +1,51 @@
+name: auto_workflow
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Validate terraform configuration
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: debug
+        run: |
+          echo ${{ github.event_name }}
+
+  plan-non-prod:
+    if: ${{ github.event_name == 'pull_request' }}
+    needs: lint
+    runs-on: ubuntu-latest
+    name: Plan Application DNS Non Prod
+    steps:
+      - name: debug
+        run: |
+          echo "triggered event"
+          echo ${{ github.event_name }}
+
+
+  plan-prod:
+    if: ${{ github.event_name == 'pull_request' }}
+    needs: "plan-non-prod"
+    runs-on: ubuntu-latest
+    name: Plan Application DNS Prod
+    steps:
+      - name: debug
+        run: |
+          echo "triggered event"
+          echo ${{ github.event_name }}
+
+  apply-non-prod:
+    if: ${{ github.event_name == 'push' }}
+    needs: lint
+    runs-on: ubuntu-latest
+    name: apply non prod
+    steps:
+      - name: debug
+        run: |
+          echo "triggered event"
+          echo ${{ github.event_name }}
