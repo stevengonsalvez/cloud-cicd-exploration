@@ -17,7 +17,7 @@ jobs:
           echo ${{ github.event_name }}
 
   plan-non-prod:
-    if: ${{ github.event == 'pull_request' }}
+    if: ${{ github.event_name == 'pull_request' }}
     needs: lint
     runs-on: ubuntu-latest
     name: Plan Application DNS Non Prod
@@ -29,7 +29,7 @@ jobs:
 
 
   plan-prod:
-    if: ${{ github.event == 'pull_request' }}
+    if: ${{ github.event_name == 'pull_request' }}
     needs: "plan-non-prod"
     runs-on: ubuntu-latest
     name: Plan Application DNS Prod
@@ -40,7 +40,7 @@ jobs:
           echo ${{ github.event_name }}
 
   apply-non-prod:
-    if: ${{ github.event == 'push' }}
+    if: ${{ github.event_name == 'push' }}
     needs: lint
     runs-on: ubuntu-latest
     name: apply non prod
