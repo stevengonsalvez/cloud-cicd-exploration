@@ -1,51 +1,55 @@
-name: called worfklow test
-
-env:
-  TRIGGER_EVENT: ${{ inputs.TRIGGER_EVENT }}
+name: tf-app-dns-reusable
 
 on:
   workflow_call:
     inputs:
       TRIGGER_EVENT:
+        description: trigger event for the workflow
         required: true
         type: string
-      ENV_SECRET_ARRAY:
-        description: test
-        required: false
-        type: string
-        
+
 jobs:
-#   run_on_push:
-#     name: push
-#     runs-on: ubuntu-latest
-#     if: ${{ inputs.TRIGGER_EVENT == 'push' }}
-#     steps:
-#       - name: print
-#         run:  |
-#           echo ${{ inputs.TRIGGER_EVENT }}
-#           echo "push workflow"
-#           echo ${{ inputs.ENV_SECRET_ARRAY }}
-
-  run_on_pullrequest:
-    name: pr
+  lint:
     runs-on: ubuntu-latest
-   # if: ${{ inputs.TRIGGER_EVENT == 'pull_request' }}
+    name: Validate terraform configuration
+
     steps:
-      - name: print
-        run:  |
-          echo ${{ inputs.TRIGGER_EVENT }} 
-          echo "pull request workflow"
-          echo ${{ toJSON(inputs.ENV_SECRET_ARRAY) }}
-          echo ::set-output name=list::${{ fromJson(inputs.ENV_SECRET_ARRAY) }}
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: debug
+        run: |
+          echo ${{ inputs.TRIGGER_EVENT }}
 
-
-  job2:
-    needs: ["run_on_pullrequest"]
+  plan-non-prod:
+    if: ${{ inputs.TRIGGER_EVENT == 'pull_request' }}
+    needs: lint
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: ${{ needs.run_on_pullrequest.outputs.list }}
+    name: Plan Application DNS Non Prod
     steps:
-      - run: |
-          echo "🎉 The job was automatically triggered by an event."
-          echo ${{ matrix.node }}
+      - name: debug
+        run: |
+          echo "triggered event"
+          echo ${{ inputs.TRIGGER_EVENT }}
+
+
+  plan-prod:
+    if: ${{ inputs.TRIGGER_EVENT == 'pull_request' }}
+    needs: "plan-non-prod"
+    runs-on: ubuntu-latest
+    name: Plan Application DNS Prod
+    steps:
+      - name: debug
+        run: |
+          echo "triggered event"
+          echo ${{ inputs.TRIGGER_EVENT }}
+
+  apply-non-prod:
+    if: ${{ inputs.TRIGGER_EVENT == 'push' }}
+    needs: lint
+    runs-on: ubuntu-latest
+    name: apply non prod
+    steps:
+      - name: debug
+        run: |
+          echo "triggered event"
+          echo ${{ inputs.TRIGGER_EVENT }}
