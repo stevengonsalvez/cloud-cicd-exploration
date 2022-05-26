@@ -1,0 +1,98 @@
+# Taskfile.yml
+
+version: '3'
+
+includes:
+  local:
+    taskfile: ~/.tasks/init.yml
+    optional: true
+
+silent: false
+# output:
+#   group:
+#     begin: '::begin::{{.TASK}}'
+#     end: '::endgroup::'
+output: prefixed
+
+vars:
+  GIT_COMMIT:
+    sh: git log -n 1 --format=%h
+  HOME: {sh: "echo $HOME"}
+  APP_NAME: '{{.APP_NAME | default "thumbelina"}}'
+  ENVIRONMENT_NAME: '{{.ENVIRONMENT_NAME | default "dev"}}'
+  AZURE_REGION: '{{.AZURE_REGION | default "eu-north"}}'
+
+env:
+  ENV: local
+  RUN_ENV: local
+  DIRECTORIES:
+    sh: find . -type f -name 'main.tf' -not -path "**/.terraform/*" -print0 | xargs -0I {} | sort -u
+  LAYER_DIR:
+    sh: find . -type f -name '*.tf' -not -path "**/.terraform/*" -print0 | xargs -0I {} dirname {} | grep layer | sort -u
+  CALLER_WORKFLOWS:
+    sh: find . -type f -name "call-tf*"
+  TF_VAR_environment_name: '{{.ENVIRONMENT_NAME}}'
+  TF_VAR_azure_region: '{{.AZURE_REGION}}'
+  TF_VAR_is_production: false
+  ARM_PROVIDER_THREEPOINTZERO_RESOURCES: true
+  RAND:
+    sh: openssl rand -hex 2
+  BOLD:
+    sh: tput bold
+  RED:
+    sh: tput setaf 1
+  GREEN:
+    sh: tput setaf 2
+  CYAN:
+    sh: tput setaf 6
+  UNDERLINE:
+    sh: tput smul
+
+
+dotenv: ['.env', '{{.ENV}}/.env.']
+
+tasks:
+
+  default:
+    desc: admin_function() -  List tasks
+    cmds:
+      - task --list
+
+  debug:
+    desc: admin_function() - a task dedicated to debugging tasks
+    cmds:
+      - echo $SHELL
+      - echo $TF_VAR_azure_region
+
+  clean:tf:
+    desc: sub_function() - Clean out all local folders with old state and dot tfvars
+    cmds:
+      - |
+        list=$(find . \( -name '*.tfstate.*' -o -name '.terraform' -o -name '*.tfstate' \) -print0 | xargs -0I {} | sort -u)
+        for each in ${list}; do echo $each; rm -rf $each; done
+        echo "${GREEN}----------------all cleaned-----------------------------------------"
+
+  tf:init:
+    desc: sub_function() - tf init all layers - will be part of local tf
+    cmds:
+      - task: clean:tf
+      - cmd: |
+          CWD=${PWD}
+          sed -i '' 's/backend \"azurerm\" {}/backend \"local\" {}/g' {{.TF_DIR}}/main.tf
+      - cmd: |
+          terraform -chdir={{.TF_DIR}} init -upgrade
+        ignore_error: true
+    # status:
+    #   - test -d {{.TF_DIR}}/.terraform
+
+
+  tf:apply:
+    desc: sub_function() - tf apply function will be part of local:tf
+    cmds:
+      - task: tf:init
+        vars:
+          TF_DIR: '{{.TF_DIR}}'
+      - task: check:login
+      - cmd: |
+          CWD=${PWD}
+          terraform -chdir={{.TF_DIR}} apply -auto-approve --var-file=../vars/common.tfvars
