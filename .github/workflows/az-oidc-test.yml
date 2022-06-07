@@ -1,0 +1,54 @@
+name: az-oidc-test
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  TERRAFORM_BASE_PATH: 'terraform'
+  VAR_BASE_PATH: 'terraform/vars'
+
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "terraform/resource-group/*"
+      - ".github/workflows/az-oidc-test.yml"
+
+permissions:
+  id-token: write
+  contents: read
+
+
+jobs:
+
+  plan-rg:
+    runs-on: ubuntu-latest
+    name: plan rg
+    environment:
+      name: Nonprod
+    env:
+      ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+      ARM_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
+      LAYER_NAME: resource-group
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: debug
+        run: |
+          echo "$GITHUB_CONTEXT"
+          env
+          echo ${ACTIONS_ID_TOKEN_REQUEST_URL}
+          echo ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}
+      - name: terraform plan
+        uses: dflook/terraform-plan@v1.25.1
+        # env:
+        #   TERRAFORM_HTTP_CREDENTIALS: github.com/stevengonsalvez=foo:${{ secrets.SAML_GITHUB_TOKEN }}
+        with:
+          add_github_comment: changes-only
+          path: ${{ env.TERRAFORM_BASE_PATH }}/${{ env.LAYER_NAME }}
+          label: ${{ env.LAYER_NAME }}-sandbox
+          variables: |
+            foo = "bar"
+          # var_file: ${{ env.VAR_BASE_PATH }}
+          # backend_config: key=${{ env.LAYER_NAME }}-sb.tfstate,${{ secrets.BACKEND_CONFIG }}
