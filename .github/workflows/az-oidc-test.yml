@@ -19,6 +19,8 @@ permissions:
   contents: read
 
 
+# subject on oidc : pullrequest or environment:
+# if environment specified on job (pull request) does not work
 jobs:
 
   plan-rg:
