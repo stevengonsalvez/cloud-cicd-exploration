@@ -1,0 +1,107 @@
+name: pr-validate
+
+env:
+  GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+  TERRAFORM_BASE_PATH: 'terraform'
+  REF: ${{ github.ref_name }}
+
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  tflint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      name: Checkout source code
+    - name: terraform fmt
+      uses: dflook/terraform-fmt-check@v1.25.1
+      with:
+        path: ${{ env.TERRAFORM_BASE_PATH }}
+
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: gitleaks-action
+      uses: zricethezav/gitleaks-action@master
+
+  tfsec:
+    name: tfsec PR commenter
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clone repo
+      uses: actions/checkout@master
+    - name: tfsec
+      uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
+      with:
+        # tfsec_args: --soft-fail
+        github_token: ${{ github.token }}
+
+  megalinter-tf:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      name: Checkout source code
+    - name: MegaLinter-tf
+      id: ml
+      uses: megalinter/megalinter@v5
+      env:
+        VALIDATE_ALL_CODEBASE: true
+        PRINT_ALPACA: false
+        GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+        #ENABLE_LINTERS: TERRAFORM_CHECKOV,TERRAFORM_TFLINT,CREDENTIALS,MARKDOWN_MARKDOWN_TABLE_FORMATTER,MARKDOWN_MARKDOWN_LINK_CHECK,MARKDOWN_REMARK_LINT,MARKDOWN_MARKDOWNLINT
+        ENABLE_LINTERS: TERRAFORM_CHECKOV,TERRAFORM_TFLINT,CREDENTIALS
+        PARALLEL: true
+        #MARKDOWN_MARKDOWN_LINK_CHECK_DISABLE_ERRORS: true
+        # MARKDOWN_MARKDOWNLINT_CONFIG_FILE: "markdownlint.json"
+        # MARKDOWN_MARKDOWN_LINK_CHECK_CONFIG_FILE: "mlc_config.json"
+
+    - name: Archive production artifacts
+      if: ${{ success() }} || ${{ failure() }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: megalinter-reports
+        path: |
+          report
+          mega-linter.log
+    - name: get-comment-body
+      id: get-comment-body
+      if: ${{ success() }} || ${{ failure() }}
+      run: |
+        if test -f report/linters_logs/ERROR-TERRAFORM_CHECKOV.log; then
+          body="$(cat report/linters_logs/ERROR-TERRAFORM_CHECKOV.log)"
+          body="${body//'%'/'%25'}"
+          body="${body//$'\n'/'%0A'}"
+          body="${body//$'\r'/'%0D'}"
+        else
+          body="no-terraform"
+        fi
+        echo "REPORT=$(echo $body)" >> $GITHUB_ENV
+        echo "::set-output name=body::$body"
+    - name: Find Comment
+      if: ${{ success() }} || ${{ failure() }}
+      uses: peter-evans/find-comment@v2
+      id: fc
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: 'github-actions[bot]'
+        body-includes: Megalinter Checkov
+
+    - name: Create or update comment
+      if: ${{ success() }} || ${{ failure() }}
+      uses: peter-evans/create-or-update-comment@v2
+      with:
+        comment-id: ${{ steps.fc.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          # Megalinter Checkov Report
+          <details>
+            <summary>Click to expand!</summary>
+          ${{ steps.get-comment-body.outputs.body }}
+          </details>
+        edit-mode: replace
