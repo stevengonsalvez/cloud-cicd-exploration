@@ -20,8 +20,8 @@ data "azurerm_subscription" "this" {
 }
 
 locals {
-  scope      = "${data.azurerm_subscription.this.id}"
-  app_name   = "tf-oidc-test-sample"
+  scope    = data.azurerm_subscription.this.id
+  app_name = "tf-oidc-test-sample"
 }
 
 data "azuread_client_config" "current" {}
@@ -38,9 +38,9 @@ resource "azuread_application" "this" {
     }
   }
   owners = [data.azuread_client_config.current.object_id, data.azuread_user.this.object_id]
-#   lifecycle {
-#     prevent_destroy = true
-#   }
+  #   lifecycle {
+  #     prevent_destroy = true
+  #   }
 }
 
 resource "azuread_service_principal" "this" {
