@@ -101,7 +101,7 @@ jobs:
   delete-rg:
     needs: ["apply-rg"]
     runs-on: ubuntu-latest
-    name: apply rg
+    name: delete rg
     environment:
       name: Nonprod
     env:
