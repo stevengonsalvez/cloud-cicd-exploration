@@ -20,5 +20,5 @@ output "sp_object_id" {
 }
 
 output "credential_id" {
-  value = azuread_application_federated_identity_credential.example.id
+  value = azuread_application_federated_identity_credential.main.id
 }

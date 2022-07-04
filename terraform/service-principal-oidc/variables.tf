@@ -5,3 +5,7 @@
 variable "owner" {
   description = "Owner of the service principal"
 }
+
+variable "app_name" {
+  description = "name of the app"
+}
