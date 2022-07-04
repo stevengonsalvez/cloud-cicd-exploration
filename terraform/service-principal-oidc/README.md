@@ -15,7 +15,12 @@ Some defaults to make testing easier
 
 example:
 
-`export TF_VAR_owner=steven.gonsalvez@ORG.com`
+```shell
+export TF_VAR_owner=steven.gonsalvez@theclassroom.dev
+export TF_VAR_app_name="tf-oidc-vending-1";
+terraform plan
+```
+
 
 and then do standard TF stuff
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
