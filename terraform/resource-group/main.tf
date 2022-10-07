@@ -1,6 +1,6 @@
 terraform {
   # to ignore backend for these tests
-  backend "local" {}
+  backend "azurerm" {}
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
