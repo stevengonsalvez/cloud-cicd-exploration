@@ -44,6 +44,7 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
       LAYER_NAME: resource-group
       ARM_USE_OIDC: true
+      TF_LOG: debug
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -64,7 +65,7 @@ jobs:
           variables: |
             foo = "bar"
           # var_file: ${{ env.VAR_BASE_PATH }}
-          # backend_config: key=${{ env.LAYER_NAME }}-sb.tfstate,${{ secrets.BACKEND_CONFIG }}
+          backend_config: key=${{ env.LAYER_NAME }}-sb-mock.tfstate,resource_group_name=nonprod-bc-t565-mock-v1-eun-layer0-rg,container_name=dev-eun,storage_account_name=statef9iir3ov5swfnkd3zjw",use_oidc=true
 
   apply-rg:
     if: ${{ github.event_name == 'push' }}
@@ -78,6 +79,7 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
       LAYER_NAME: resource-group
       ARM_USE_OIDC: true
+      TF_LOG: debug
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -98,7 +100,7 @@ jobs:
           variables: |
             foo = "bar"
           # var_file: ${{ env.VAR_BASE_PATH }}
-          # backend_config: key=${{ env.LAYER_NAME }}-sb.tfstate,${{ secrets.BACKEND_CONFIG }}
+          backend_config: key=${{ env.LAYER_NAME }}-sb-mock.tfstate,resource_group_name=nonprod-bc-t565-mock-v1-eun-layer0-rg,container_name=dev-eun,storage_account_name=statef9iir3ov5swfnkd3zjw",use_oidc=true
 
   delete-rg:
     needs: ["apply-rg"]
