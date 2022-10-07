@@ -43,6 +43,7 @@ jobs:
       ARM_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
       ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
       LAYER_NAME: resource-group
+      ARM_USE_OIDC: true
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -76,6 +77,7 @@ jobs:
       ARM_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
       ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
       LAYER_NAME: resource-group
+      ARM_USE_OIDC: true
     steps:
       - name: Checkout
         uses: actions/checkout@v3
