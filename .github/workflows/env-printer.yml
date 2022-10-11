@@ -25,6 +25,7 @@ jobs:
       - name: export
         run: |
           export
+          echo ${{github.event.repository.name}}
 
       # Runs a set of commands using the runners shell
       - name: Dump GitHub context
