@@ -15,4 +15,4 @@ jobs:
       - name: debug
         run: |
           echo "something"
-          echo ${{ github.event.label.name }}
+          echo ${{ github.event }}
