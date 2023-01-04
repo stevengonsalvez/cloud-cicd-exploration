@@ -17,5 +17,5 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
           echo "something"
-          echo ${{ env.GITHUB_CONTEXT }}
-          #echo ${{ toJson(github.event) }}
+          #echo ${{ env.GITHUB_CONTEXT }}
+          echo ${{ toJson(github.event) }}
