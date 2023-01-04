@@ -10,6 +10,7 @@ on:
 
 jobs:
   label:
+    if: ${{ github.event.label.name != 'dont-bother-ci' }}
     runs-on: ubuntu-latest
     steps:
       - name: debug
