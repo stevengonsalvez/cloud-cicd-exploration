@@ -18,4 +18,4 @@ jobs:
         run: |
           echo "something"
           echo ${{ env.GITHUB_CONTEXT }}
-          echo ${{ toJson(github.event) }}
+          #echo ${{ toJson(github.event) }}
