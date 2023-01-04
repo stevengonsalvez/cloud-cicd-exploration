@@ -14,8 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: debug
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
           echo "something"
           echo ${{ toJson(github.event) }}
