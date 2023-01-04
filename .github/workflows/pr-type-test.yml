@@ -1,4 +1,4 @@
-name: pr-validate
+name: pr-type-test
 
 env:
   GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
