@@ -1,0 +1,18 @@
+name: pr-validate
+
+env:
+  GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: debug
+        run: |
+          echo "something"
+          echo ${{ github.event.label.name }}
