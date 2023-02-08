@@ -2,7 +2,7 @@
 
 name: environment printer
 env:
-  ENV_NAME: ${{ secret.ENV_NAME }}
+  ENV_NAME: ${{ github.repository }}
 # Controls when the workflow will run
 on:
 
