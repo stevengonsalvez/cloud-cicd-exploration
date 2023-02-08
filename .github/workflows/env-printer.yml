@@ -2,7 +2,7 @@
 
 name: environment printer
 env:
-  ENV_NAME: ${{ github.repository }}
+  ENV_NAME: Nonprod
 # Controls when the workflow will run
 on:
 
