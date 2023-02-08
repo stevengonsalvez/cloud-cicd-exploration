@@ -2,7 +2,7 @@
 
 name: environment printer
 env:
-  ENV_NAME: Nonprod
+  ENV_NAME: ${{ secret.ENV_NAME }}
 # Controls when the workflow will run
 on:
 
