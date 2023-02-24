@@ -1,0 +1,19 @@
+name: pr-type-test
+
+env:
+  GITHUB_TOKEN: ${{ secrets.SAML_GITHUB_TOKEN }}
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  label:
+    if: ${{ github.event.label.name != 'dont-bother-ci' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: debug
+        run: |
+          echo "something"
+          echo ${{ toJson(github.event) }}
