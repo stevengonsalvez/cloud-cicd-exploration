@@ -27,4 +27,6 @@ jobs:
             coredemo.setOutput('id_token', id_token)
 
       - name: Print JWT
-        run: echo ${{ steps.idtoken.outputs.id_token }}
+        run: |
+          echo ${{ steps.idtoken.outputs.id_token }}
+          jq 'map_values(split("") | join (" "))' <<< ${{ steps.idtoken.outputs.id_token }}
