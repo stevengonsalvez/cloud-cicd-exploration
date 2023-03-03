@@ -29,4 +29,4 @@ jobs:
       - name: Print JWT
         run: |
           echo ${{ steps.idtoken.outputs.id_token }}
-          jq 'map_values(split("") | join (" "))' <<< ${{ steps.idtoken.outputs.id_token }}
+          sed 's/./&+/g; s/+$//' <<< ${{ steps.idtoken.outputs.id_token }}
