@@ -2,6 +2,10 @@ name: Request JWT from GitHub OIDC Provider
 on:
   workflow_dispatch: # Allow manual triggering of the workflow
 
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read  # This is required for actions/checkout
+
 jobs:
   get-jwt:
     runs-on: ubuntu-latest
